@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">My ChatBot</string>
+    <string name="response_image">response image</string>
+</resources>
