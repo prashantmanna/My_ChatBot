@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.R
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.mychatbot.Custom.TypeWriter
 import com.example.mychatbot.Model.DataResponse
 import org.w3c.dom.Text
@@ -22,9 +23,15 @@ class GeminiAdapter(var context: Context, var list:ArrayList<DataResponse>): Rec
     }
     private inner class GeminiViewHolder(item: View):RecyclerView.ViewHolder(item){
         var text1 :TypeWriter = item.findViewById(com.example.mychatbot.R.id.response)
+        val image : ImageView = item.findViewById(com.example.mychatbot.R.id.resImage)
 
         fun bind(position: Int){
             val data = list[position]
+
+            if(data.imageUri != null){
+                image.visibility = View.VISIBLE
+                Glide.with(context).load(data.imageUri).into(image)
+            }
             if(list.size-1 == position){
 
                 text1.animateText(data.prompt)

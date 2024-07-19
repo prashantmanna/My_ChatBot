@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.provider.ContactsContract.Data
 import android.provider.MediaStore
 import android.util.Log
+import android.view.WindowInsetsAnimation
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
@@ -19,11 +21,18 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.example.mychatbot.Adapter.GeminiAdapter
+import com.example.mychatbot.ImageGeneration.ImageModel.ImageRequestBody
+import com.example.mychatbot.ImageGeneration.ImageModel.generatedImage
+import com.example.mychatbot.ImageGeneration.api.ApiService
+import com.example.mychatbot.ImageGeneration.api.RetrofitClient
 import com.example.mychatbot.Model.DataResponse
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.net.URI
 
 class MainActivity : AppCompatActivity() {
@@ -31,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var btn:Button
     lateinit var img:ImageView
     lateinit var rec:RecyclerView
+    lateinit var check:CheckBox
     var bitmap:Bitmap? = null
     private lateinit var imageUri : String
 
@@ -60,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         btn = findViewById(R.id.button)
         img = findViewById(R.id.imageView)
         rec = findViewById(R.id.recycler)
+        check = findViewById(R.id.check)
 
         img.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
@@ -68,7 +79,55 @@ class MainActivity : AppCompatActivity() {
         adapter = GeminiAdapter(this,responseData)
         rec.adapter = adapter
         btn.setOnClickListener {
-            if(edt.text != null){
+
+            if(edt.text != null && check.isChecked){
+                val prompt = edt.text.toString()
+                responseData.add(DataResponse(0,prompt,""))
+                adapter.notifyDataSetChanged()
+
+
+                val apiservice = RetrofitClient.instance.create(ApiService::class.java)
+                val requestbody = ImageRequestBody(
+                    providers = "stabilityai",
+                    text = prompt,
+                    resolution = "1792x1024",
+                    n = "1"
+                )
+
+
+                apiservice.generateImage(requestbody).enqueue(object : Callback<generatedImage?> {
+                    override fun onResponse(call: Call<generatedImage?>, response: Response<generatedImage?>) {
+                        if (response.isSuccessful) {
+                            val stabilityAi = response.body()?.stabilityai
+                            val items = stabilityAi?.items
+                            val imageUrl = items?.get(0)?.image_resource_url
+
+                            if (imageUrl != null) {
+                                responseData.add(DataResponse(1, "Here is image", imageUrl))
+                                adapter.notifyDataSetChanged()
+                            } else {
+                                Log.e("MainActivity", "Image URL is null")
+                                // Optionally, you can add a placeholder or error message to responseData here
+                            }
+                        } else {
+                            Log.e("MainActivity", "Response is not successful")
+                            // Handle the case where the response is not successful
+                        }
+                    }
+
+                    override fun onFailure(call: Call<generatedImage?>, t: Throwable) {
+                        Log.e("MainActivity", "Request failed", t)
+                        // Handle the failure case
+                    }
+                })
+
+
+
+
+            }
+
+
+            else if(edt.text != null){
                 val generativeModel = GenerativeModel(
                     modelName = "gemini-1.5-flash",
                     // Access your API key as a Build Configuration variable (see "Set up your API key" above)
