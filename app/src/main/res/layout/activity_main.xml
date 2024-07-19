@@ -16,6 +16,7 @@
         android:text="ChatBot"
         android:textAlignment="center"
         android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -46,7 +47,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.68"
         app:layout_constraintStart_toEndOf="@+id/editTextText"
-        app:srcCompat="@drawable/ic_launcher_background" />
+        app:srcCompat="@drawable/gallery" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"

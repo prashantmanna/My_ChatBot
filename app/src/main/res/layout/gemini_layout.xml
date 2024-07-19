@@ -21,6 +21,7 @@
             android:layout_marginTop="16dp"
             android:textSize="16sp"
             android:padding="10dp"
+            android:fontFamily="@font/allan"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -39,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/resbtn"
-            android:text="SUBMIT"
+            android:text="STOP"
             app:layout_constraintTop_toBottomOf="@+id/resImage"
             app:layout_constraintStart_toStartOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
