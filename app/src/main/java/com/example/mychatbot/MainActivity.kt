@@ -7,11 +7,14 @@ import android.os.Bundle
 import android.provider.ContactsContract.Data
 import android.provider.MediaStore
 import android.util.Log
+import android.view.KeyEvent
 import android.view.WindowInsetsAnimation
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -70,7 +73,9 @@ class MainActivity : AppCompatActivity() {
         btn = findViewById(R.id.button)
         img = findViewById(R.id.imageView)
         rec = findViewById(R.id.recycler)
+        rec.isNestedScrollingEnabled = false
         check = findViewById(R.id.check)
+
 
         img.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
