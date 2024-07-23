@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         btn.setOnClickListener {
 
             if(edt.text != null && check.isChecked){
-                val prompt = edt.text.toString()
+                var prompt = edt.text.toString()
                 responseData.add(DataResponse(0,prompt,""))
                 adapter.notifyDataSetChanged()
 
@@ -99,6 +99,7 @@ class MainActivity : AppCompatActivity() {
                     n = "1"
                 )
 
+                prompt = " "
 
                 apiservice.generateImage(requestbody).enqueue(object : Callback<generatedImage?> {
                     override fun onResponse(call: Call<generatedImage?>, response: Response<generatedImage?>) {
@@ -110,13 +111,16 @@ class MainActivity : AppCompatActivity() {
                             if (imageUrl != null) {
                                 responseData.add(DataResponse(1, "Here is image", imageUrl))
                                 adapter.notifyDataSetChanged()
+                                prompt = ""
                             } else {
                                 Log.e("MainActivity", "Image URL is null")
                                 // Optionally, you can add a placeholder or error message to responseData here
+                                prompt =  " "
                             }
                         } else {
                             Log.e("MainActivity", "Response is not successful")
                             // Handle the case where the response is not successful
+                            prompt = " "
                         }
                     }
 
@@ -156,6 +160,10 @@ class MainActivity : AppCompatActivity() {
                         runOnUiThread{
                             responseData.add(DataResponse(1,response.text!!,""))
                             adapter.notifyDataSetChanged()
+                            img.setImageResource(R.drawable.gallery)
+                            bitmap = null
+                            imageUri = ""
+                            edt.text = null
                         }
 
                     }
@@ -176,7 +184,10 @@ class MainActivity : AppCompatActivity() {
 
                     }
 
+
+
                 }
+
             }
 
 

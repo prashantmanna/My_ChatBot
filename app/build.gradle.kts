@@ -48,7 +48,7 @@ dependencies {
     implementation(libs.generativeai)
     implementation(libs.glide)
     implementation(libs.retrofit)
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation(libs.converter.gson)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
 }
